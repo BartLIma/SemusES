@@ -26,9 +26,9 @@ if "indice_secretario_consultado" not in st.session_state:
 
 # Carregamento seguro do arquivo de dados dos secretários
 try:
-    df = pd.read_csv("secretarios_cosems_pb.csv", sep=";", encoding="utf-8-sig", dtype=str, skip_blank_lines=True)
+    df = pd.read_csv("secretarios_cosems_es.csv", sep=";", encoding="utf-8-sig", dtype=str, skip_blank_lines=True)
 except Exception:
-    df = pd.read_csv("secretarios_cosems_pb.csv", sep=",", encoding="utf-8-sig", dtype=str, skip_blank_lines=True)
+    df = pd.read_csv("secretarios_cosems_es.csv", sep=",", encoding="utf-8-sig", dtype=str, skip_blank_lines=True)
     
 df = df.dropna(how="all")
 
@@ -60,7 +60,7 @@ df["Município"] = df["Município"].astype(str).str.strip()
 df["Secretário"] = df["Secretário"].astype(str).str.strip()
 
 # Título em tamanho de subtítulo
-st.subheader("🔍 Consulta de Secretários de Saúde - Paraíba")
+st.subheader("🔍 Consulta de Secretários de Saúde - Espírito Santo")
 
 # CAIXA DE BUSCA INTELIGENTE EM BRANCO 
 busca_termo = st.text_input("Digite o nome do Município ou do Secretário para pesquisar:", value="")
