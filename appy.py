@@ -24,23 +24,23 @@ st.markdown(
 if "indice_secretario_consultado" not in st.session_state:
     st.session_state["indice_secretario_consultado"] = None
 
-# --- FUNÇÃO EXECUTORA DE BUSCA 100% DINÂMICA PELO NOME ---
+# --- FUNÇÃO EXECUTORA DE BUSCA 100% DINÂMICA PELO NOME (CORRIGIDA) ---
 @st.cache_data(show_spinner=False)
 def buscar_coordenadas_municipio(nome_municipio):
-    """Consulta a API pública do OpenStreetMap em tempo real usando o nome da cidade"""
+    """Consulta a API pública do OpenStreetMap em tempo real usando o nome próprio da cidade"""
     if not nome_municipio or pd.isna(nome_municipio):
         return -20.3155, -40.3128  # Coordenada neutra de Vitória (Capital) como segurança
         
     try:
-        # Higieniza o texto do município enviado
-        muni_limpo = str(nome_municipio).strip().lower()
+        # A MUDANÇA CRUCIAL: Converte de CAIXA ALTA para Nome Próprio e limpa espaços
+        muni_limpo = str(nome_municipio).strip().title()
         
-        # Amarramos a busca ao Espírito Santo para garantir precisão absoluta
+        # Estrutura o termo de busca perfeitamente aceito pela API global
         termo_completo = f"{muni_limpo}, Espirito Santo, Brazil"
         cidade_enc = urllib.parse.quote(termo_completo)
         url = f"https://openstreetmap.org{cidade_enc}&format=jsonv2&limit=1"
         
-        headers = {"User-Agent": "HubSecretariosES/1.0 (bartolomeulima.corecon@gmail.com)"}
+        headers = {"User-Agent": "HubSecretariosES/2.0 (bartolomeulima.corecon@gmail.com)"}
         resposta = requests.get(url, headers=headers, timeout=8)
         dados = resposta.json()
         
@@ -50,6 +50,7 @@ def buscar_coordenadas_municipio(nome_municipio):
         pass
         
     return -20.3155, -40.3128
+
 # --- CARREGAMENTO SEGURO DOS DADOS CAPÌXABAS ---
 encodings_para_testar = ["utf-8-sig", "ISO-8859-1", "cp1252"]
 df = None
