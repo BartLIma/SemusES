@@ -24,23 +24,49 @@ st.markdown(
 if "indice_secretario_consultado" not in st.session_state:
     st.session_state["indice_secretario_consultado"] = None
 
-# --- FUNÇÃO EXECUTORA DE BUSCA 100% DINÂMICA PELO NOME ---
+import pandas as pd
+import streamlit as st
+import requests
+import os
+import unicodedata
+import urllib.parse
+
+st.set_page_config(layout="wide", page_title="Secretarias de Saúde - ES", page_icon="🔍")
+
+# --- TRUQUE CSS ATUALIZADO: Tema Azul e Verde para Destaque ---
+st.markdown(
+    """
+    <style>
+        .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+        div[data-testid="stVerticalBlock"] > div { border-radius: 0px; }
+        h2 { color: #1E3A8A; font-weight: 600 !important; }
+        h3 { color: #28a745; font-weight: 600 !important; }
+        .stMarkdown p { margin-bottom: 0.5rem !important; }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+if "indice_secretario_consultado" not in st.session_state:
+    st.session_state["indice_secretario_consultado"] = None
+
+# --- MOTOR EXECUTOR 100% DINÂMICO SEM COORDENADAS FIXAS ---
 @st.cache_data(show_spinner=False)
 def buscar_coordenadas_municipio(nome_municipio):
-    """Consulta a API pública do OpenStreetMap em tempo real usando o nome da cidade"""
+    """Consulta a API pública Nominatim em tempo real com base no dado limpo do Excel"""
     if not nome_municipio or pd.isna(nome_municipio):
-        return -20.3155, -40.3128  # Coordenada neutra de Vitória (Capital) como segurança
+        return -20.3155, -40.3128  # Fallback de segurança na Capital (Vitória)
         
     try:
-        # Higieniza o texto do município enviado
-        muni_limpo = str(nome_municipio).strip().lower()
+        # Pega o nome do município vindo do seu Excel já higienizado
+        muni_limpo = str(nome_municipio).strip()
         
-        # Amarramos a busca ao Espírito Santo para garantir precisão absoluta
+        # Amarra a busca ao Estado e País para exatidão geográfica
         termo_completo = f"{muni_limpo}, Espirito Santo, Brazil"
         cidade_enc = urllib.parse.quote(termo_completo)
         url = f"https://openstreetmap.org{cidade_enc}&format=jsonv2&limit=1"
         
-        headers = {"User-Agent": "HubSecretariosES/1.0 (bartolomeulima.corecon@gmail.com)"}
+        headers = {"User-Agent": "HubSecretariosES/3.0 (bartolomeulima.corecon@gmail.com)"}
         resposta = requests.get(url, headers=headers, timeout=8)
         dados = resposta.json()
         
@@ -50,6 +76,7 @@ def buscar_coordenadas_municipio(nome_municipio):
         pass
         
     return -20.3155, -40.3128
+
 # --- CARREGAMENTO SEGURO DOS DADOS CAPÌXABAS ---
 encodings_para_testar = ["utf-8-sig", "ISO-8859-1", "cp1252"]
 df = None
@@ -138,7 +165,6 @@ with st.sidebar:
             st.session_state["indice_secretario_consultado"] = None
             st.sidebar.warning("Nenhum município localizado.")
     else:
-        # Se a caixa de texto estiver vazia, exibe a lista completa de cidades em ordem alfabética
         opcoes_completas = {"-- Selecione o registro --": -1}
         for idx, row in df.iterrows():
             muni = row["Municipio_Exibicao"]
@@ -235,7 +261,7 @@ if st.session_state["indice_secretario_consultado"] is not None and st.session_s
             st.markdown(" ")
             st.markdown("🗺️ **Geolocalização Automática por Município**")
             
-            # CHAMA A FUNÇÃO DE BUSCA EM TEMPO REAL CONFIANDO NO ISOLAMENTO DO APP
+            # Executa a busca em tempo real na API com a string vinda corrigida do Excel
             lat, lon = buscar_coordenadas_municipio(municipio_atual)
             df_mapa = pd.DataFrame({"lat": [lat], "lon": [lon]})
             
