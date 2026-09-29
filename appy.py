@@ -215,7 +215,7 @@ with st.sidebar:
         else:
             st.session_state["indice_secretario_consultado"] = None
 # --- ÁREA PRINCIPAL ---
-st.title("🏛️ COSEMS/ES — Painel de Consulta Institucional")
+st.title("🏛️ COSEMS/ES — Painel de Consulta Secretarias")
 
 if st.session_state["indice_secretario_consultado"] is not None and st.session_state["indice_secretario_consultado"] in df.index:
     s_idx = st.session_state["indice_secretario_consultado"]
