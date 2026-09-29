@@ -84,8 +84,8 @@ def buscar_coordenadas_municipio(nome_municipio):
     """Consulta as coordenadas reais usando a biblioteca Geopy/Nominatim de forma estável"""
     try:
         # Criamos o localizador com um agente único para evitar bloqueios do servidor
-        geolocator = Nominatim(user_agent="cosems_pb_analytics_app_v2")
-        localizacao = geolocator.geocode(f"{nome_municipio}, Paraiba, Brazil", timeout=10)
+        geolocator = Nominatim(user_agent="cosems_es_analytics_app_v2")
+        localizacao = geolocator.geocode(f"{nome_municipio}, Espírito Santo, Brazil", timeout=10)
         
         if localizacao:
             return localizacao.latitude, localizacao.longitude
@@ -95,7 +95,7 @@ def buscar_coordenadas_municipio(nome_municipio):
     # Se a busca falhar temporariamente por rede, tenta uma segunda busca focada apenas na cidade e estado
     try:
         time.sleep(1) # Pausa amigável exigida pelo servidor de mapas
-        geolocator = Nominatim(user_agent="cosems_pb_analytics_backup")
+        geolocator = Nominatim(user_agent="cosems_es_analytics_backup")
         localizacao = geolocator.geocode(f"{nome_municipio}, Paraiba", timeout=10)
         if localizacao:
             return localizacao.latitude, localizacao.longitude
