@@ -27,7 +27,7 @@ df = None
 
 for enc in encodings_para_testar:
     try:
-        df = pd.read_csv("secretarios_cosems_pb.csv", sep=",", encoding=enc, dtype=str, skip_blank_lines=True)
+        df = pd.read_csv("secretarios_cosems_es.csv", sep=",", encoding=enc, dtype=str, skip_blank_lines=True)
         break
     except Exception:
         continue
@@ -35,13 +35,13 @@ for enc in encodings_para_testar:
 if df is None:
     for enc in encodings_para_testar:
         try:
-            df = pd.read_csv("secretarios_cosems_pb.csv", sep=";", encoding=enc, dtype=str, skip_blank_lines=True)
+            df = pd.read_csv("secretarios_cosems_es.csv", sep=";", encoding=enc, dtype=str, skip_blank_lines=True)
             break
         except Exception:
             continue
 
 if df is None:
-    st.error("❌ Não foi possível ler o arquivo 'secretarios_cosems_pb.csv'. Verifique se o arquivo está na pasta ou se o formato é válido.")
+    st.error("❌ Não foi possível ler o arquivo 'secretarios_cosems_es.csv'. Verifique se o arquivo está na pasta ou se o formato é válido.")
     st.stop()
     
 df = df.dropna(how="all")
@@ -78,7 +78,7 @@ df["Secretário"] = df["Secretário"].astype(str).str.strip()
 from geopy.geocoders import Nominatim
 import time
 
-# --- FUNÇÃO ATUALIZADA PARA EVITAR A COORDENADA PADRÃO DE JOÃO PESSOA ---
+# --- FUNÇÃO ATUALIZADA PARA EVITAR A COORDENADA PADRÃO  ---
 @st.cache_data(show_spinner=False)
 def buscar_coordenadas_municipio(nome_municipio):
     """Consulta as coordenadas reais usando a biblioteca Geopy/Nominatim de forma estável"""
@@ -234,4 +234,4 @@ else:
 
 # --- RODAPÉ DISCRETO ---
 st.markdown("---")
-st.markdown("<p style='text-align:left; font-size:12px; color:#A3A3A3;'>Autor: Bartolomeu Lima - Corecon-ES 1541,    Fonte de Dados: https://cosemspb.org/novos-secs/</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:left; font-size:12px; color:#A3A3A3;'>Autor: Bartolomeu Lima - Corecon-ES 1541,    Fonte de Dados: Cosems-ES</p>", unsafe_allow_html=True)
